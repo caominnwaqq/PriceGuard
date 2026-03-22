@@ -1,0 +1,41 @@
+{
+    "version": "0.2",
+    "language": "en,vi",
+    "allowCompoundWords": true,
+    "dictionaries": [
+        "bash",
+        "css",
+        "html",
+        "node",
+        "npm",
+        "softwareTerms",
+        "typescript"
+    ],
+    "ignorePaths": [
+        "**/node_modules/**",
+        "**/dist/**",
+        "pnpm-lock.yaml",
+        "**/.git/**",
+        "cspell.config.json"
+    ],
+    "ignoreRegExpList": [
+        "/https?:\\/\\/[^\\s]+/g"
+    ],
+    "words": [
+        "PriceGuard",
+        "Shopee",
+        "Tiki",
+        "Lazada",
+        "Fastify",
+        "Prisma",
+        "Vite",
+        "Zustand",
+        "workspaceStorage",
+        "caominnwaqq",
+        "so sanh",
+        "gia re",
+        "nguoi dung",
+        "tieng viet",
+        "uoc tinh"
+    ]
+}

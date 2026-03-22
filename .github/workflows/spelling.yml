@@ -28,5 +28,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Run typo check
-        uses: crate-ci/typos@v1.31.1
+      - name: Run cspell (English + Vietnamese)
+        uses: streetsidesoftware/cspell-action@v6
+        with:
+          config: .cspell.json
+          files: |
+            **/*.md
+            **/*.ts
+            **/*.tsx
+            **/*.js
+            **/*.json
+            **/*.yml
+            **/*.yaml
