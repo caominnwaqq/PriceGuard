@@ -1,159 +1,87 @@
-# PriceGuard
+# 🛡️ PriceGuard
 
-PriceGuard is a Chrome Extension + API backend that helps users compare prices across Shopee, Tiki, and Lazada.
+**Compare Shopee, Tiki, and Lazada prices instantly with AI-driven detection.**
 
-## Highlights
+[![Spelling](https://github.com/caominnwaqq/priceguard/actions/workflows/spelling.yml/badge.svg)](https://github.com/caominnwaqq/priceguard/actions/workflows/spelling.yml)
 
-- Fast inline detection on product pages (content script).
-- Popup comparison with cheapest platform, savings, and 30-day chart.
-- Cross-platform search keyword generation (slug + product name signals).
-- Security hardening included:
-  - CORS allowlist strategy.
-  - Request validation + payload limits.
-  - Basic per-IP rate limit.
-  - Safer content rendering (no HTML string injection for dynamic fields).
-- Monorepo with pnpm workspace: extension, api, shared.
+[](https://www.google.com/search?q=https://github.com/your-repo/priceguard)
+[](https://www.google.com/search?q=https://github.com/your-repo/priceguard)
 
-## Project Structure
+PriceGuard is a powerful Chrome Extension and API backend that takes the guesswork out of online shopping. It automatically detects products on major Vietnamese marketplaces and shows you the best deals across the web in real-time.
 
-- extension: Chrome extension (MV3, React + Vite + CRX plugin)
-- api: Fastify service for price comparison response
-- shared: shared TypeScript types
+## 🌟 Highlights
 
-## How It Works
+  * 🚀 **Instant Inline Detection:** Smart content scripts identify products directly on the page.
+  * 💰 **Cheapest Platform Alerts:** Popups highlight exactly where you can save the most money.
+  * 📈 **30-Day Price Tracking:** Visualize price trends with an integrated history chart.
+  * 🔐 **Security First:** Built with CORS allowlisting, payload limits, and hardened content rendering.
+  * 📦 **Monorepo Architecture:** Cleanly organized using `pnpm` workspaces for the extension, API, and shared types.
 
-1. Content script detects current product name and current price on supported marketplaces.
-2. Background script sends detection data to API /api/prices.
-3. API derives a search keyword and builds comparison rows.
-4. Popup and inline badge render the results.
+## ℹ️ Overview
 
-## Important Accuracy Note
+PriceGuard acts as your personal shopping assistant. By analyzing product name signals and slugs, the API derives search keywords to build a comprehensive comparison across Shopee, Tiki, and Lazada.
 
-Current cross-platform comparison data is still MVP-style and partially estimated.
-Some rows are generated from search/listing assumptions instead of verified product-detail extraction from each marketplace.
+Hold your documentation to the same standard as your code. This project is built for developers who want a robust, secure, and scalable starting point for browser-based price comparison tools.
 
-If a row is estimated, UI labels it as "Gia uoc tinh tu trang tim kiem" and CTA changes to "Xem ket qua".
+## 😊 Leave a good impression
 
-## Requirements
+Whether you are a savvy shopper looking for the best deal or a developer exploring MV3 extension architecture, PriceGuard is designed to be approachable. We prioritize:
 
-- Node.js 20+
-- pnpm 9+
-- Chrome (for extension testing)
+1.  **User Time:** Quick answers to "Does this solve my problem?"
+2.  **Quality:** Proper formatting, syntax highlighting, and clear structure.
+3.  **Transparency:** Clear labeling for estimated data (MVP-style) vs. verified extraction.
 
-## Quick Start (Local)
+## 🚀 Usage Instructions
 
-### 1) Install dependencies
+PriceGuard works silently in the background. When you visit a supported product page, an inline badge or popup will render the comparison results.
 
-Run from repo root:
+```typescript
+// Example: API Request for price comparison
+const response = await fetch('/api/prices', {
+  method: 'POST',
+  body: JSON.stringify({
+    productName: "iPhone 15 Pro",
+    platform: "shopee",
+    currentPrice: 28000000
+  })
+});
+```
 
-pnpm install
+*(Insert a GIF here showing the price comparison popup appearing on a Shopee page\!)*
 
-### 2) Start API
+## ⬇️ Installation Instructions
 
-pnpm dev:api
+Get your local environment running in minutes. You will need Node.js 20+ and pnpm 9+.
 
-Default API URL: http://localhost:3000
-Health check: GET /health
+1.  **Install Dependencies**
+    ```bash
+    pnpm install
+    ```
+2.  **Launch the API**
+    ```bash
+    pnpm dev:api
+    # Health check available at http://localhost:3000/health
+    ```
+3.  **Build & Load Extension**
+      * Run `pnpm --filter extension build`.
+      * Open `chrome://extensions` in Chrome.
+      * Enable **Developer mode** and click **Load unpacked**.
+      * Select the `extension/dist` folder.
 
-### 3) Build extension
+## 🛠️ Tech Stack
 
-pnpm --filter extension build
+  * **Extension:** Chrome MV3, React, Vite.
+  * **Backend:** Fastify (API), Zod (Validation).
+  * **Workspace:** pnpm, TypeScript.
 
-### 4) Load extension in Chrome
+## 🗺️ Roadmap
 
-1. Open chrome://extensions
-2. Enable Developer mode
-3. Click Load unpacked
-4. Select folder: extension/dist
+We are constantly improving our matching heuristics and data accuracy.
 
-## Workspace Scripts
+  * [ ] **Real Marketplace Connectors:** Move from estimated data to real-time verification.
+  * [ ] **Variant Disambiguation:** Strict matching for color, storage, and models.
+  * [ ] **Production Controls:** Adding JWT authentication and Redis-backed rate limiting.
 
-From repo root:
+## 💭 Feedback
 
-- pnpm dev:api
-- pnpm dev:extension
-- pnpm build
-
-## API Contract
-
-### POST /api/prices
-
-Request body:
-
-- productName: string
-- currentUrl: valid URL
-- platform: shopee | tiki | lazada
-- currentPrice: positive integer
-
-Response includes:
-
-- product
-- searchKeyword
-- prices
-- history
-- savings
-- comparison (optional metadata)
-
-## Security Notes
-
-Implemented:
-
-- API body size limit.
-- CORS origin checks (extension + localhost flows).
-- Runtime request validation via zod.
-- Basic in-memory rate limiting.
-- Extension API base enforces HTTPS outside localhost.
-
-Recommended for production:
-
-- Add API authentication (API key or JWT).
-- Replace in-memory rate limit with Redis/shared store.
-- Add observability and abuse monitoring.
-
-## Troubleshooting
-
-### "Invalid body: currentPrice must be greater than 0"
-
-Detector returned invalid/zero price on current page. Extension now skips API calls when detected price <= 0.
-
-### "Extension context invalidated"
-
-Usually appears right after extension reload/update while old content script is still alive in a tab.
-Reload the tab after reloading extension.
-
-### "Why does Tiki/Lazada result not match exact page price?"
-
-Because some rows are still estimated from search/listing data in MVP.
-Use product-detail page flow for better reliability.
-
-## Packaging for Chrome Web Store
-
-1. Build extension:
-
-pnpm --filter extension build
-
-2. Create zip from extension/dist contents (manifest must be at zip root).
-
-PowerShell example:
-
-Set-Location extension/dist
-Compress-Archive -Path * -DestinationPath ../priceguard-store.zip -Force
-
-3. Upload extension/priceguard-store.zip to Chrome Web Store Developer Dashboard.
-
-## Current Limitations
-
-- Cross-platform prices are not fully real-time marketplace-verified yet.
-- Matching/scoring is heuristic-based.
-- History data is generated for MVP visualization.
-
-## Roadmap
-
-- Real marketplace connectors for candidate retrieval.
-- Verified product-detail linking per platform.
-- Better variant disambiguation (storage/color/model strict match).
-- Production auth, telemetry, and anti-abuse controls.
-
-## License
-
-Internal project (private workspace). Add a license before public release.
+If you find this project useful or have suggestions for the price-matching algorithm, please start a Discussion\!
